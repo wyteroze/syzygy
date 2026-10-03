@@ -1,3 +1,6 @@
 [submodule "vendor/luau"]
 	path = vendor/luau
 	url = https://github.com/luau-lang/luau.git
+[submodule "vendor/binaryen"]
+	path = vendor/binaryen
+	url = https://github.com/WebAssembly/binaryen.git

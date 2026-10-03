@@ -2,3 +2,4 @@
 -Iinclude
 -isystemvendor/luau/Ast/include
 -isystemvendor/luau/Common/include
+-isystemvendor/binaryen/src
