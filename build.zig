@@ -4,7 +4,36 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
-    const mod = b.createModule(.{
+    const vendor_luau = b.path("vendor/luau");
+
+    const luau_ast_mod = b.createModule(.{ .target = target, .optimize = optimize, .link_libcpp = true });
+    luau_ast_mod.addIncludePath(b.path("vendor/luau/Ast/include"));
+    luau_ast_mod.addIncludePath(b.path("vendor/luau/Common/include"));
+    luau_ast_mod.addCSourceFiles(.{
+        .root = vendor_luau,
+        .language = .cpp,
+        .files = &.{
+            "Common/src/StringUtils.cpp",
+            "Common/src/TimeTrace.cpp",
+            "Ast/src/Allocator.cpp",
+            "Ast/src/Ast.cpp",
+            "Ast/src/Confusables.cpp",
+            "Ast/src/Cst.cpp",
+            "Ast/src/Lexer.cpp",
+            "Ast/src/Location.cpp",
+            "Ast/src/Parser.cpp",
+            "Ast/src/PrettyPrinter.cpp",
+        },
+        .flags = &.{ "-std=c++17" }
+    });
+
+    const luau_ast = b.addLibrary(.{
+        .name = "Luau.Ast",
+        .root_module = luau_ast_mod,
+        .linkage = .static
+    });
+
+    const syzygy_mod = b.createModule(.{
         .target = target,
         .optimize = optimize,
         .link_libcpp = true,
@@ -12,23 +41,20 @@ pub fn build(b: *std.Build) void {
 
     const exe = b.addExecutable(.{
         .name = "syzygy",
-        .root_module = mod,
+        .root_module = syzygy_mod,
     });
 
-    mod.addCSourceFiles(.{
-        .root = b.path("src/"),
+    syzygy_mod.addCSourceFiles(.{
+        .root = b.path("src"),
         .language = .cpp,
-        .files = &.{
-            "main.cpp"
-        },
-        .flags = &.{
-            "-std=c++17",
-            "-Wall",
-            "-Wextra"
-        },
+        .files = &.{ "main.cpp" },
+        .flags = &.{ "-std=c++17", "-Wall", "-Wextra" },
     });
 
-    mod.addIncludePath(b.path("include/"));
+    syzygy_mod.addIncludePath(b.path("include"));
+    syzygy_mod.addSystemIncludePath(b.path("vendor/luau/Ast/include"));
+    syzygy_mod.addSystemIncludePath(b.path("vendor/luau/Common/include"));
+    syzygy_mod.linkLibrary(luau_ast);
     b.installArtifact(exe);
 
     const run_cmd = b.addRunArtifact(exe);
