@@ -4,6 +4,7 @@
 #include <Luau/Parser.h>
 #include <Luau/Ast.h>
 #include <binaryen-c.h>
+#include <flag.hpp>
 
 int main(int argc, char *argv[]) {
     printf("Hello world!\n");

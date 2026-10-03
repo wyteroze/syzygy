@@ -121,4 +121,11 @@ pub fn build(b: *std.Build) void {
 
     syzygy_mod.linkLibrary(binaryen);
     syzygy_mod.addSystemIncludePath(b.path("vendor/binaryen/src"));
+
+    // flag.h
+    syzygy_mod.addSystemIncludePath(b.path("vendor/"));
+    syzygy_mod.addCSourceFiles(.{
+        .files = &.{ "vendor/flag.hpp" },
+        .language = .cpp,
+    });
 }

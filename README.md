@@ -18,3 +18,4 @@ Luau to WebAssembly AOT compiler (experimental). Still WIP.
 * [Syzygy](LICENSE) (Apache-2.0)
 * [Luau](vendor/luau/LICENSE.txt) (MIT)
 * [Binaryen](vendor/binaryen/LICENSE) (Apache-2.0)
+* [flag.h](https://github.com/tsoding/flag.h/blob/master/LICENSE) (MIT)
